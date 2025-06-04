@@ -1,0 +1,24 @@
+# Environment variables
+.env
+
+# Python virtual environment
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Uploaded and processed files
+static/uploads/*
+static/results/*
+!static/uploads/.gitkeep
+!static/results/.gitkeep
+
+# IDE files
+.vscode/
+.idea/
+
+# OS specific
+.DS_Store
