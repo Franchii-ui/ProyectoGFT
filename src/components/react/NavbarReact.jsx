@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav className="bg-[#213f7f] text-white">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <a href="/" className="flex items-center">
-          <img src="/gft-logo-white.png" alt="GFT" className="h-8" />
+          <img src="/Logo_GFT.jpg" alt="GFT" className="h-8" />
         </a>
         
         <div className="hidden md:flex items-center space-x-6">
