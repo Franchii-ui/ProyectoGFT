@@ -1,0 +1,158 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Convertir Video">
+  <style>
+    .upload-section {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+    
+    .upload-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .upload-header {
+      background: var(--gft-blue);
+      color: white;
+      padding: 1.5rem;
+    }
+    
+    .upload-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-subtitle {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+    
+    .upload-body {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #444;
+    }
+    
+    input[type="url"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--gft-blue);
+      box-shadow: 0 0 0 3px rgba(33, 63, 127, 0.2);
+    }
+    
+    .file-upload {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .file-upload:hover {
+      border-color: var(--gft-blue);
+      background: #f8fafc;
+    }
+    
+    .upload-icon {
+      font-size: 2.5rem;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+    
+    .upload-text {
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-hint {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    
+    .submit-button {
+      width: 100%;
+      background: var(--gft-blue);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .submit-button:hover {
+      background: #1a366d;
+    }
+
+    .logo img {
+      height: 2rem; /* 32px - ajusta según necesites */
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover img {
+      transform: scale(1.05);
+    }
+
+    .footer-logo {
+      height: 1.5rem;
+      margin: 0 auto 1rem;
+      opacity: 0.9;
+    }
+  </style>
+
+  <section class="upload-section">
+    <div class="upload-card">
+      <div class="upload-header">
+        <h1 class="upload-title">Sube tu video</h1>
+        <p class="upload-subtitle">Formatos soportados: MP4, MOV, AVI</p>
+      </div>
+      
+      <div class="upload-body">
+        <div class="form-group">
+          <label for="video-url">URL del video</label>
+          <input type="url" id="video-url" placeholder="https://ejemplo.com/video.mp4">
+        </div>
+        
+        <div class="form-group">
+          <label>O sube un archivo</label>
+          <div class="file-upload">
+            <div class="upload-icon">↑</div>
+            <p class="upload-text">Arrastra tu video aquí o haz clic para seleccionar</p>
+            <p class="upload-hint">Selecciona un archivo de video</p>
+            <input type="file" accept="video/*" class="hidden">
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-button">Convertir Video</button>
+      </div>
+    </div>
+  </section>
+</MainLayout>
