@@ -1,0 +1,431 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Convertir Video">
+  <style>
+    .upload-section {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+    
+    .upload-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .upload-header {
+      background: var(--gft-blue);
+      color: white;
+      padding: 1.5rem;
+    }
+    
+    .upload-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-subtitle {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+    
+    .upload-body {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #444;
+    }
+    
+    input[type="url"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    input[type="url"]:focus {
+      outline: none;
+      border-color: var(--gft-blue);
+      box-shadow: 0 0 0 3px rgba(33, 63, 127, 0.2);
+    }
+    
+    .file-upload {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .file-upload:hover {
+      border-color: var(--gft-blue);
+      background: #f8fafc;
+    }
+    
+    .upload-icon {
+      font-size: 2.5rem;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+    
+    .upload-text {
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-hint {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    
+    .submit-button {
+      width: 100%;
+      background: var(--gft-blue);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .submit-button:hover {
+      background: #1a366d;
+    }
+
+    .logo img {
+      height: 2rem; /* 32px - ajusta según necesites */
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover img {
+      transform: scale(1.05);
+    }
+
+    .footer-logo {
+      height: 1.5rem;
+      margin: 0 auto 1rem;
+      opacity: 0.9;
+    }
+
+    .processing-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.9);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+      border-radius: 10px;
+    }
+    
+    .processing-overlay.active {
+      display: flex;
+    }
+    
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border-left-color: var(--gft-blue);
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .error-message {
+      color: #e53e3e;
+      padding: 0.75rem;
+      border-radius: 6px;
+      background: #fed7d7;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .result-section {
+      margin-top: 2rem;
+      display: none;
+    }
+    
+    .result-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+    }
+    
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .result-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--gft-blue);
+    }
+    
+    .export-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .export-button {
+      padding: 0.5rem 1rem;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .export-button:hover {
+      background: #e5e7eb;
+    }
+    
+    .transcription-text {
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 1rem;
+      height: 300px;
+      overflow-y: auto;
+      line-height: 1.6;
+      background: #f9fafb;
+    }
+  </style>
+
+  <section class="upload-section">
+    <div class="upload-card">
+      <div class="upload-header">
+        <h1 class="upload-title">Sube tu video</h1>
+        <p class="upload-subtitle">Formatos soportados: MP4, MOV, AVI</p>
+      </div>
+      
+      <div class="upload-body" id="upload-container" style="position: relative;">
+        <div id="processing-overlay" class="processing-overlay">
+          <div class="spinner"></div>
+          <p>Procesando video...</p>
+        </div>
+        
+        <div id="error-message" class="error-message"></div>
+        
+        <form id="upload-form">
+          <div class="form-group">
+            <label for="video-url">URL del video</label>
+            <input type="url" id="video-url" placeholder="https://ejemplo.com/video.mp4">
+          </div>
+          
+          <div class="form-group">
+            <label>O sube un archivo</label>
+            <div class="file-upload" id="file-upload-area" style="position: relative;">
+              <div class="upload-icon">↑</div>
+              <p class="upload-text">Arrastra tu video aquí o haz clic para seleccionar</p>
+              <p class="upload-hint">Selecciona un archivo de video</p>
+              <input type="file" id="file-input" accept="video/*,audio/*" style="position: absolute; opacity: 0; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="language">Idioma (opcional)</label>
+            <input type="text" id="language" placeholder="es, en, fr..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: var(--transition);">
+          </div>
+          
+          <button type="submit" class="submit-button" id="convert-button">Convertir Video</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <section id="result-section" class="upload-section result-section">
+    <div class="result-card">
+      <div class="result-header">
+        <h2 class="result-title">Resultados de la transcripción</h2>
+        <div class="export-options">
+          <button class="export-button" id="export-txt">TXT</button>
+          <button class="export-button" id="export-docx">DOCX</button>
+          <button class="export-button" id="export-pdf">PDF</button>
+        </div>
+      </div>
+      
+      <div class="transcription-text" id="transcription-text"></div>
+    </div>
+  </section>
+
+  <script>
+    // Import the API functions
+    import { transcribeVideo } from '../services/api';
+    
+    // Type definitions
+    interface TranscriptionResponse {
+      success: boolean;
+      file_id: string;
+      transcription?: string;
+      message?: string;
+    }
+    
+    // Get DOM elements
+    const uploadForm = document.getElementById('upload-form') as HTMLFormElement;
+    const videoUrlInput = document.getElementById('video-url') as HTMLInputElement;
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const languageInput = document.getElementById('language') as HTMLInputElement;
+    const fileUploadArea = document.getElementById('file-upload-area') as HTMLDivElement;
+    const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+    const processingOverlay = document.getElementById('processing-overlay') as HTMLDivElement;
+    const resultSection = document.getElementById('result-section') as HTMLElement;
+    const transcriptionText = document.getElementById('transcription-text') as HTMLDivElement;
+    const exportTxtBtn = document.getElementById('export-txt') as HTMLButtonElement;
+    const exportDocxBtn = document.getElementById('export-docx') as HTMLButtonElement;
+    const exportPdfBtn = document.getElementById('export-pdf') as HTMLButtonElement;
+    
+    let selectedFile: File | null = null;
+    let currentFileId: string | null = null;
+    
+    // Add visual feedback for file selection
+    fileInput?.addEventListener('change', (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      if (target?.files && target.files.length > 0) {
+        selectedFile = target.files[0];
+        if (fileUploadArea) {
+          fileUploadArea.style.borderColor = 'var(--gft-blue)';
+          const textElement = fileUploadArea.querySelector('.upload-text');
+          if (textElement) {
+            textElement.textContent = `Archivo seleccionado: ${selectedFile.name}`;
+          }
+        }
+      }
+    });
+    
+    // Handle form submission
+    uploadForm?.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      
+      // Check if either URL or file is provided
+      const videoUrl = videoUrlInput?.value?.trim() || '';
+      
+      if (!videoUrl && !selectedFile) {
+        showError('Por favor, proporciona una URL o sube un archivo.');
+        return;
+      }
+      
+      // Process the transcription
+      startProcessing();
+      
+      try {
+        // Prioritize file upload over URL if both are provided
+        if (selectedFile) {
+          const language = languageInput?.value?.trim() || undefined;
+          const response = await transcribeVideo(selectedFile, language) as TranscriptionResponse;
+          
+          if (response.success) {
+            showResults(response.transcription || '', response.file_id);
+          } else {
+            showError(response.message || 'Error al procesar el video.');
+          }
+        } else {
+          // URL handling would go here - not implemented in your API yet
+          showError('La transcripción por URL aún no está implementada.');
+        }
+      } catch (err) {
+        const error = err as Error;
+        showError(error instanceof Error ? error.message : 'Ha ocurrido un error al procesar el video.');
+      } finally {
+        stopProcessing();
+      }
+    });
+    
+    // Set up export buttons
+    exportTxtBtn?.addEventListener('click', () => {
+      if (currentFileId) {
+        window.open(`${import.meta.env.PUBLIC_API_URL || 'http://localhost:8000'}/export/${currentFileId}?format=txt`, '_blank');
+      }
+    });
+    
+    exportDocxBtn?.addEventListener('click', () => {
+      if (currentFileId) {
+        window.open(`${import.meta.env.PUBLIC_API_URL || 'http://localhost:8000'}/export/${currentFileId}?format=docx`, '_blank');
+      }
+    });
+    
+    exportPdfBtn?.addEventListener('click', () => {
+      if (currentFileId) {
+        window.open(`${import.meta.env.PUBLIC_API_URL || 'http://localhost:8000'}/export/${currentFileId}?format=pdf`, '_blank');
+      }
+    });
+    
+    // Helper functions
+    function showError(message: string): void {
+      if (errorMessage) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+    }
+    
+    function startProcessing(): void {
+      if (processingOverlay) {
+        processingOverlay.classList.add('active');
+      }
+    }
+    
+    function stopProcessing(): void {
+      if (processingOverlay) {
+        processingOverlay.classList.remove('active');
+      }
+    }
+    
+    function showResults(text: string, fileId: string): void {
+      currentFileId = fileId;
+      if (transcriptionText) {
+        transcriptionText.textContent = text;
+      }
+      if (resultSection) {
+        resultSection.style.display = 'block';
+        
+        // Scroll to results
+        setTimeout(() => {
+          resultSection.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  </script>
+</MainLayout>

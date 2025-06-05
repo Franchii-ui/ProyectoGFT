@@ -1,25 +1,31 @@
 import os
-from pydantic_settings import BaseSettings
+from pathlib import Path
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
 
-class Settings(BaseSettings):
-    """Application settings"""
-    APP_NAME: str = "GFT Video Converter"
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    UPLOAD_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static/uploads")
-    RESULTS_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static/results")
-    
-    # Create directories if they don't exist
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    
-    # File size limits (10MB for testing, increase as needed)
-    MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB
-    
-    # Supported file formats
-    SUPPORTED_VIDEO_FORMATS: list = [".mp4", ".avi", ".mov", ".mkv"]
-    SUPPORTED_AUDIO_FORMATS: list = [".mp3", ".wav", ".m4a"]
+# Base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-settings = Settings()
+# API settings
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable not set")
+
+# Directory settings
+UPLOAD_DIR = BASE_DIR / "static" / "uploads"
+RESULTS_DIR = BASE_DIR / "static" / "results"
+
+# Create directories if they don't exist
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+# File settings
+MAX_FILE_SIZE = 5000 * 1024 * 1024  # 5GB
+SUPPORTED_VIDEO_FORMATS = [".mp4", ".mov", ".avi", ".mkv"]
+SUPPORTED_AUDIO_FORMATS = [".mp3", ".wav", ".m4a"]
+SUPPORTED_FORMATS = SUPPORTED_VIDEO_FORMATS + SUPPORTED_AUDIO_FORMATS
+
+# App settings
+APP_NAME = "GFT Video Converter"

@@ -1,0 +1,42 @@
+---
+import { useState } from 'react';
+const { fullContent, summary } = Astro.props;
+const [showSummary, setShowSummary] = useState(false);
+
+// Función para manejar el cambio de estado
+const toggleSummary = () => setShowSummary(!showSummary);
+---
+
+<div class="max-w-6xl mx-auto py-8 px-4">
+  <div class="flex gap-8">
+    <!-- Documento principal -->
+    <div class="flex-1 bg-white p-8 rounded-xl shadow-md">
+      <div class="flex justify-between mb-6">
+        <a href="/" class="text-[#213F7F] hover:underline">Inicio</a>
+        <div class="flex gap-3">
+          <button 
+            onclick={`setShowSummary(${!showSummary})`}
+            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+            >
+            {showSummary ? 'Ver Completo' : 'Resumir'}
+          </button>
+          <button class="px-4 py-2 bg-[#213F7F] text-white rounded hover:bg-blue-800">
+            Descargar Word
+          </button>
+        </div>
+      </div>
+      
+      <article class="prose max-w-none">
+        {showSummary ? summary : fullContent}
+      </article>
+    </div>
+    
+    <!-- Resumen (sidebar) -->
+    {showSummary && (
+      <div class="w-80 bg-gray-50 p-6 rounded-xl">
+        <h3 class="font-bold text-lg mb-4">Resumen</h3>
+        <p class="text-gray-700">{summary}</p>
+      </div>
+    )}
+  </div>
+</div>

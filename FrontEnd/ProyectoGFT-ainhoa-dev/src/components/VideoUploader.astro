@@ -1,0 +1,39 @@
+---
+// Tipado explícito para el evento
+const handleSubmit = (event: Event) => {
+  event.preventDefault();
+  // Lógica para procesar video
+  window.location.href = '/results';
+};
+---
+
+<div class="bg-white p-8 rounded-xl shadow-md">
+  <h2 class="text-2xl font-bold text-[#213f7f] mb-6">Sube tu video</h2>
+  
+  <form onsubmit={`event.preventDefault(); window.location.href='/results'`} class="space-y-6">
+    <div>
+      <label class="block text-gray-700 mb-2">URL del video:</label>
+      <input 
+        type="url" 
+        placeholder="https://ejemplo.com/video.mp4" 
+        class="w-full p-3 border rounded-lg"
+        name="videoUrl"
+      />
+    </div>
+    
+    <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+      <input type="file" accept="video/*" class="hidden" id="video-upload" name="videoFile" />
+      <label for="video-upload" class="cursor-pointer">
+        <p class="text-gray-600 mb-2">Arrastra tu video aquí o haz clic para seleccionar</p>
+        <p class="text-sm text-gray-500">Formatos soportados: MP4, MOV, AVI</p>
+      </label>
+    </div>
+    
+    <button 
+      type="submit"
+      class="w-full bg-[#213f7f] hover:bg-blue-800 text-white py-3 px-4 rounded-lg font-medium"
+    >
+      Convertir
+    </button>
+  </form>
+</div>
