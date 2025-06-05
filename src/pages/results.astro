@@ -1,11 +1,75 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import DocumentViewer from '../components/DocumentViewer.astro';
+import { useState } from 'react'; // Importación necesaria para hooks
+
+// Props recibidos
+const { fullContent, summary } = Astro.props;
 ---
 
 <MainLayout title="Resultados">
-  <DocumentViewer 
-    fullContent="Texto completo extraído del video..." 
-    summary="Resumen generado por IA..." 
-  />
+  <style>
+    /* Tus estilos CSS permanecen igual */
+    .results-container { /* ... */ }
+    .results-header { /* ... */ }
+    /* ... (mantén todos tus estilos) ... */
+  </style>
+
+  <!-- Contenido principal usando HTML estándar -->
+  <div class="results-container">
+    <div class="results-header">
+      <h1 class="results-title">Documento Generado</h1>
+      <div class="action-buttons">
+        <button id="toggle-summary" class="btn btn-secondary">
+          Ver Resumen
+        </button>
+        <button id="download-btn" class="btn btn-primary">
+          Descargar Word
+        </button>
+        <a href="/" class="btn btn-secondary">
+          Volver al Inicio
+        </a>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <div id="full-content" class="main-content">
+        <h2 class="content-title">Contenido Completo</h2>
+        <div class="document-content">
+          {fullContent}
+        </div>
+      </div>
+      
+      <div id="summary-panel" class="summary-panel" style="display: none;">
+        <h2 class="content-title">Resumen Ejecutivo</h2>
+        <div class="document-content">
+          {summary}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script con JavaScript puro -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggle-summary');
+      const fullContent = document.getElementById('full-content');
+      const summaryPanel = document.getElementById('summary-panel');
+      
+      if (toggleBtn && fullContent && summaryPanel) {
+        toggleBtn.addEventListener('click', () => {
+          const isSummaryVisible = summaryPanel.style.display === 'block';
+          
+          summaryPanel.style.display = isSummaryVisible ? 'none' : 'block';
+          fullContent.style.display = isSummaryVisible ? 'block' : 'none';
+          toggleBtn.textContent = isSummaryVisible ? 'Ver Resumen' : 'Ver Documento Completo';
+        });
+      }
+
+      // Opcional: Lógica para descargar Word
+      document.getElementById('download-btn')?.addEventListener('click', () => {
+        console.log('Descargar documento...');
+        // Implementa tu lógica de descarga aquí
+      });
+    });
+  </script>
 </MainLayout>
