@@ -6,27 +6,21 @@ from fpdf import FPDF
 from jinja2 import Template
 import logging
 
+from app.utils import document_converter
+
 logger = logging.getLogger(__name__)
 
 def text_to_docx(text: str, output_path: Path) -> Path:
     """Convert plain text to DOCX format"""
     try:
-        # Create new Document
         doc = Document()
-        
-        # Add title
         doc.add_heading('Transcription', level=1)
-        
-        # Split by paragraphs and add each paragraph
         paragraphs = text.split('\n\n')
         for para in paragraphs:
             if para.strip():
                 doc.add_paragraph(para.strip())
-        
-        # Save document
         doc.save(output_path)
         return output_path
-    
     except Exception as e:
         logger.error(f"Error creating DOCX document: {str(e)}")
         raise
@@ -34,33 +28,20 @@ def text_to_docx(text: str, output_path: Path) -> Path:
 def text_to_pdf(text: str, output_path: Path) -> Path:
     """Convert plain text to PDF format"""
     try:
-        # Create PDF object
+        print(f"DEBUG: text_to_pdf received text: {repr(text[:100])}")  # Show first 100 chars
         pdf = FPDF()
         pdf.add_page()
-        
-        # Set font
-        pdf.set_font("Arial", size=12)
-        
-        # Add title
         pdf.set_font("Arial", 'B', 16)
         pdf.cell(200, 10, txt="Transcription", ln=True, align='C')
         pdf.ln(10)
-        
-        # Reset to normal font
         pdf.set_font("Arial", size=12)
-        
-        # Split by paragraphs and add each paragraph
         paragraphs = text.split('\n\n')
         for para in paragraphs:
             if para.strip():
-                # Handle multi-line text
                 pdf.multi_cell(0, 10, txt=para.strip())
                 pdf.ln(5)
-        
-        # Save PDF
         pdf.output(output_path)
         return output_path
-    
     except Exception as e:
         logger.error(f"Error creating PDF document: {str(e)}")
         raise
@@ -68,7 +49,6 @@ def text_to_pdf(text: str, output_path: Path) -> Path:
 def text_to_html(text: str, output_path: Path) -> Path:
     """Convert plain text to HTML format"""
     try:
-        # Simple HTML template
         html_template = """
         <!DOCTYPE html>
         <html>
@@ -88,22 +68,12 @@ def text_to_html(text: str, output_path: Path) -> Path:
         </body>
         </html>
         """
-        
-        # Prepare template
         template = Template(html_template)
-        
-        # Split text into paragraphs
         paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
-        
-        # Render HTML
         html_content = template.render(paragraphs=paragraphs)
-        
-        # Save to file
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
-        
         return output_path
-    
     except Exception as e:
         logger.error(f"Error creating HTML document: {str(e)}")
         raise

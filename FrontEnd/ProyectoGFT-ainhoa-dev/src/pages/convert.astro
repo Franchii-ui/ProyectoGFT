@@ -203,22 +203,32 @@ import MainLayout from '../layouts/MainLayout.astro';
     
     .export-options {
       display: flex;
-      gap: 0.5rem;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
     }
     
     .export-button {
-      padding: 0.5rem 1rem;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 4px;
-      font-size: 0.875rem;
-      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .export-button.primary {
+      background-color: var(--gft-blue);
+      color: white;
+      border-color: var(--gft-blue);
     }
     
     .export-button:hover {
-      background: #e5e7eb;
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
     
     .transcription-text {
@@ -281,7 +291,15 @@ import MainLayout from '../layouts/MainLayout.astro';
         <div class="export-options">
           <button class="export-button" id="export-txt">TXT</button>
           <button class="export-button" id="export-docx">DOCX</button>
-          <button class="export-button" id="export-pdf">PDF</button>
+          <button class="export-button primary" id="export-pdf">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            Download PDF
+          </button>
         </div>
       </div>
       
@@ -386,6 +404,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     
     exportPdfBtn?.addEventListener('click', () => {
       if (currentFileId) {
+        // Open in a new tab with the format parameter
         window.open(`${import.meta.env.PUBLIC_API_URL || 'http://localhost:8000'}/export/${currentFileId}?format=pdf`, '_blank');
       }
     });
