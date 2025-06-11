@@ -9,7 +9,7 @@ from pydub import AudioSegment
 from openai import OpenAI
 import app.config as config
 import logging
-
+from app.db import get_db
 logger = logging.getLogger(__name__)
 router = APIRouter()
 

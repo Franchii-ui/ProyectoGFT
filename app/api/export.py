@@ -6,7 +6,7 @@ from app.utils import document_converter
 import app.config as config
 import logging
 from enum import Enum
-
+from app.db import get_db
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
