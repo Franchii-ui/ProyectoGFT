@@ -6,7 +6,7 @@ import Layout from '../layouts/MainLayout.astro';
 <Layout title="Iniciar Sesión">
   <div class="login-container">
     <h1>Identificación de Empleado</h1>
-    <form action="/procesar-login" method="POST" class="login-form">
+    <form id="loginForm" class="login-form">
       <div class="form-group">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
@@ -19,7 +19,7 @@ import Layout from '../layouts/MainLayout.astro';
       
       <div class="form-group">
         <label for="email">Correo Corporativo:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required placeholder="usuario@gft.com">
       </div>
       
       <button type="submit" class="submit-btn">Enviar</button>
@@ -75,3 +75,66 @@ import Layout from '../layouts/MainLayout.astro';
     background-color: #45a049;
   }
 </style>
+
+<script>
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('loginForm');
+  
+  // Verificar que el formulario existe
+  if (!loginForm) {
+    console.error('No se encontró el formulario con ID "loginForm"');
+    return;
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // 1. Obtener elementos del DOM con verificación de nulidad
+    const nombreInput = document.getElementById('nombre') as HTMLInputElement;
+    const apellidoInput = document.getElementById('apellido') as HTMLInputElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+
+    const nombre = nombreInput.value;
+
+    // Verificar que todos los inputs existen
+    if (!nombreInput || !apellidoInput || !emailInput) {
+      alert('Error: No se encontraron todos los campos del formulario');
+      return;
+    }
+
+    // 2. Obtener valores de los inputs
+    const formData = {
+      nombre: nombreInput.value,
+      apellido: apellidoInput.value,
+      email: emailInput.value
+    };
+
+    // 3. Validar correo corporativo
+    if (!formData.email.endsWith('@gft.com')) {
+      alert('❌ Por favor, usa tu correo corporativo (@gft.com)');
+      return;
+    }
+
+    // 4. Enviar datos al back-end
+    try {
+      const response = await fetch('URL_DEL_BACKEND', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Error al enviar los datos. Por favor, intenta nuevamente.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Revisa la consola para más detalles.');
+    }
+  });
+});
+</script>
