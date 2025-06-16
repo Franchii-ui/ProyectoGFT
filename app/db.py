@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from app.models.user import Base
 from app.models.transcription import Transcription  # if needed
 
-DATABASE_URL = "sqlite+aiosqlite:///./test.db"  # Use PostgreSQL in production
+DATABASE_URL = "postgresql+asyncpg://postgres:12345678@localhost:5432/franchi"  # Use PostgreSQL 
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(

@@ -26,8 +26,8 @@ async def test_openai():
         logger.error(f"OpenAI API test failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"OpenAI API test failed: {str(e)}")
 
-@router.get("/test-db")
-async def test_db(db: AsyncSession = Depends(get_db)):
+#@router.get("/test-db")
+#async def test_db(db: AsyncSession = Depends(get_db)):
     # Create a test user
     user = User(username="testuser", email="test@example.com")
     db.add(user)
