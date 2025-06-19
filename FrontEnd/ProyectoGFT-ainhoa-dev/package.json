@@ -1,0 +1,22 @@
+{
+  "name": "proyectogft-ainhoa-dev",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.3.0",
+    "astro": "^5.8.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/ts-plugin": "^1.0.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}

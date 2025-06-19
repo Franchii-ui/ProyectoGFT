@@ -1,0 +1,112 @@
+---
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFT Converter</title>
+  <style>
+    :root {
+      --gft-blue: #213f7f;
+      --gft-blue-light: #3a5a9a;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    header {
+      background: white;
+      color: var(--gft-blue);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .logo img {
+      height: 3rem; /* 32px - ajusta según necesites */
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover img {
+      transform: scale(1.05);
+    }
+    
+    nav a {
+      color: var(--gft-blue);
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: var(--transition);
+      font-weight: 1000;
+    }
+    
+    nav a:hover {
+      color: #a3c4ff;
+    }
+    
+    footer {
+      background: #112855;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: auto;
+    }
+    
+    .footer-logo {
+      height: 2.5rem;
+      margin: 0 auto 1rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <img src="/Logo_GFT.jpg" alt="GFT" class="h-8"> 
+      </div>
+      <nav>
+        <a href="/">Inicio</a>
+        <a href="/convert">Convertir</a>
+        <a href="/inicio-sesion">Iniciar Sesión</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+  <img src="/Logo_GFT.jpg" alt="GFT" class="footer-logo">
+    <p>© 2025 GFT Group. Todos los derechos reservados.</p>
+    <p class="footer-subtext">Conversión Inteligente de Contenido Audiovisual</p>
+  </footer>
+</body>
+</html>
