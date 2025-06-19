@@ -10,4 +10,5 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    password_hash = Column(String)
 

@@ -9,20 +9,25 @@ import Layout from '../layouts/MainLayout.astro';
     <form id="loginForm" class="login-form">
       <div class="form-group">
         <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
+        <input type="text" id="nombre" name="nombre">
       </div>
       
       <div class="form-group">
         <label for="apellido">Apellido:</label>
-        <input type="text" id="apellido" name="apellido" required>
+        <input type="text" id="apellido" name="apellido">
       </div>
       
       <div class="form-group">
         <label for="email">Correo Corporativo:</label>
         <input type="email" id="email" name="email" required placeholder="usuario@gft.com">
       </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required placeholder="Contraseña">
+      </div>
       
-      <button type="submit" class="submit-btn">Enviar</button>
+      <button type="submit" class="submit-btn">Iniciar sesión / Registrarse</button>
     </form>
   </div>
 </Layout>
@@ -88,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Get the email input as HTMLInputElement
     const emailInput = document.getElementById('email') as HTMLInputElement | null;
     if (!emailInput) {
       alert('No se encontró el campo de correo.');
@@ -100,19 +104,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Usar FormData para enviar como formulario
     const formData = new FormData(loginForm);
 
     try {
-      const response = await fetch('http://localhost:8000/register/', {
+      const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
         body: formData
       });
 
       if (response.ok) {
-        window.location.href = '/';
+        // Set login flag in localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = '/convert'; // Redirect to converter page
       } else {
-        alert('Error al enviar los datos. Por favor, intenta nuevamente.');
+        const data = await response.json();
+        alert(data.detail || 'Error al iniciar sesión o registrarse. Por favor, intenta nuevamente.');
       }
     } catch (error) {
       console.error('Error:', error);
