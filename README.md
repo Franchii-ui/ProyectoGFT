@@ -4,9 +4,7 @@
 ![Versión](https://img.shields.io/badge/Versión-1.0.0-blue)
 ![Última Actualización](https://img.shields.io/badge/Última%20Actualización-2025--06--19-green)
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x400?text=VideoTranscriber+Demo" alt="VideoTranscriber Demo" width="800">
-</p>
+
 
 ## 📝 Descripción
 
