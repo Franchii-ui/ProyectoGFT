@@ -447,12 +447,4 @@ import MainLayout from '../layouts/MainLayout.astro';
       }
     }
   </script>
-
-  <script>
-  if (typeof window !== 'undefined') {
-    if (!localStorage.getItem('isLoggedIn')) {
-      window.location.href = '/inicio-sesion'; // Redirect to login if not logged in
-    }
-  }
-  </script>
 </MainLayout>

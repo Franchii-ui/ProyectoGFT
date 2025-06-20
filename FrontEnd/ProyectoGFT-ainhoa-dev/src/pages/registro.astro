@@ -1,12 +1,22 @@
 ---
-// src/pages/inicio-sesion.astro
+// src/pages/registro.astro
 import Layout from '../layouts/MainLayout.astro';
 ---
 
-<Layout title="Iniciar Sesión">
+<Layout title="Registro">
   <div class="login-container">
-    <h1>Identificación de Empleado</h1>
-    <form id="loginForm" class="login-form">
+    <h1>Registro de Empleado</h1>
+    <form id="registerForm" class="login-form">
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" required>
+      </div>
+      
       <div class="form-group">
         <label for="email">Correo Corporativo:</label>
         <input type="email" id="email" name="email" required placeholder="usuario@gft.com">
@@ -15,10 +25,18 @@ import Layout from '../layouts/MainLayout.astro';
       <div class="form-group">
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" required minlength="8">
+        <small>Mínimo 8 caracteres</small>
       </div>
       
-      <button type="submit" class="submit-btn">Ingresar</button>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+      </div>
+      
+      <button type="submit" class="submit-btn">Registrarse</button>
     </form>
+    
+    <p class="login-link">¿Ya tienes cuenta? <a href="/inicio-sesion">Inicia sesión aquí</a></p>
   </div>
 </Layout>
 
@@ -65,23 +83,24 @@ import Layout from '../layouts/MainLayout.astro';
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s;
+    margin-top: 1rem;
   }
   
   .submit-btn:hover {
     background-color: #9a2878;
   }
-
-  .register-link {
+  
+  .login-link {
     margin-top: 1.5rem;
     text-align: center;
   }
   
-  .register-link a {
+  .login-link a {
     color: #B02A87;
     font-weight: bold;
   }
 
-    .password-toggle {
+  .password-toggle {
     position: absolute;
     right: 10px;
     top: 50%;
@@ -94,79 +113,46 @@ import Layout from '../layouts/MainLayout.astro';
   .form-group {
     position: relative;
   }
+  
+  small {
+    font-size: 0.8rem;
+    color: #666;
+  }
 </style>
 
 <script>
-// Función con tipado explícito
-function togglePassword(id: string): void {
-  const input = document.getElementById(id) as HTMLInputElement | null;
-  const toggle = input?.nextElementSibling as HTMLElement | null;
-  
-  if (!input || !toggle) return;
-  
-  if (input.type === 'password') {
-    input.type = 'text';
-    toggle.textContent = '🙈 Ocultar';
-  } else {
-    input.type = 'password';
-    toggle.textContent = '👁️ Mostrar';
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('loginForm') as HTMLFormElement | null;
+  const registerForm = document.getElementById('registerForm') as HTMLFormElement | null;
   
-  if (!loginForm) return;
+  if (!registerForm) return;
 
-  loginForm.addEventListener('submit', async (e) => {
+  registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const emailInput = document.getElementById('email') as HTMLInputElement | null;
-    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
-    
-    if (!emailInput || !passwordInput) {
-      alert('Error: No se encontraron los campos requeridos');
-      return;
-    }
-    
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    
-    if (!email.endsWith('@gft.com')) {
+    if (!emailInput || !emailInput.value.endsWith('@gft.com')) {
       alert('❌ Por favor, usa tu correo corporativo (@gft.com)');
       return;
     }
     
-    if (password.length < 8) {
-      alert('❌ La contraseña debe tener al menos 8 caracteres');
-      return;
-    }
+    const formData = new FormData(registerForm);
     
     try {
-      // Obtener usuario registrado
-      const storedUser = localStorage.getItem(email);
-      if (!storedUser) {
-        alert('❌ Usuario no registrado');
-        return;
+      const response = await fetch('http://localhost:8000/registro/', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        // Guardar datos simplificados en localStorage
+        localStorage.setItem('user', emailInput.value);
+        localStorage.setItem('isAuthenticated', 'true');
+        
+        // Redirigir directamente a la conversión
+        window.location.href = '/convert';
+      } else {
+        alert('Error al registrar. Por favor, intenta nuevamente.');
       }
-      
-      const user = JSON.parse(storedUser);
-      
-      // Verificar contraseña
-      if (user.password !== password) {
-        alert('❌ Contraseña incorrecta');
-        return;
-      }
-      
-      // Guardar sesión
-      localStorage.setItem('currentUser', JSON.stringify({
-        email: user.email,
-        name: user.name
-      }));
-      localStorage.setItem('isAuthenticated', 'true');
-      
-      // Redirigir
-      window.location.href = '/convert';
     } catch (error) {
       console.error('Error:', error);
       alert('Error de conexión');
