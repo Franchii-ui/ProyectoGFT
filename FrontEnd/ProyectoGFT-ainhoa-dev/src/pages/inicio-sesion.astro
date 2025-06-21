@@ -97,24 +97,8 @@ import Layout from '../layouts/MainLayout.astro';
 </style>
 
 <script>
-// Función con tipado explícito
-function togglePassword(id: string): void {
-  const input = document.getElementById(id) as HTMLInputElement | null;
-  const toggle = input?.nextElementSibling as HTMLElement | null;
-  
-  if (!input || !toggle) return;
-  
-  if (input.type === 'password') {
-    input.type = 'text';
-    toggle.textContent = '🙈 Ocultar';
-  } else {
-    input.type = 'password';
-    toggle.textContent = '👁️ Mostrar';
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('loginForm') as HTMLFormElement | null;
+  const loginForm = document.getElementById('loginForm');
   
   if (!loginForm) return;
 
@@ -143,30 +127,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     try {
-      // Obtener usuario registrado
-      const storedUser = localStorage.getItem(email);
-      if (!storedUser) {
-        alert('❌ Usuario no registrado');
-        return;
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('password', password);
+
+      const response = await fetch('http://localhost:8000/login/', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        // Guardar sesión
+        localStorage.setItem('currentUser', JSON.stringify({
+          email: user.email,
+          name: user.username
+        }));
+        localStorage.setItem('isAuthenticated', 'true');
+        // Redirigir
+        window.location.href = '/convert';
+      } else {
+        const error = await response.json();
+        alert(error.detail || '❌ Usuario o contraseña incorrectos');
       }
-      
-      const user = JSON.parse(storedUser);
-      
-      // Verificar contraseña
-      if (user.password !== password) {
-        alert('❌ Contraseña incorrecta');
-        return;
-      }
-      
-      // Guardar sesión
-      localStorage.setItem('currentUser', JSON.stringify({
-        email: user.email,
-        name: user.name
-      }));
-      localStorage.setItem('isAuthenticated', 'true');
-      
-      // Redirigir
-      window.location.href = '/convert';
     } catch (error) {
       console.error('Error:', error);
       alert('Error de conexión');

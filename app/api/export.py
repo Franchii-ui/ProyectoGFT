@@ -17,6 +17,10 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from io import BytesIO
 import re
 import requests
+import os
+from openai import OpenAI
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -47,27 +51,57 @@ def chunk_text(text, max_length=2000):
         chunks.append(current_chunk)
     return chunks
 
-def humanize_with_llama3(text, language="es"):
+def humanize_with_gpt35(text, language="es"):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY not set in environment variables")
+    client = OpenAI(api_key=api_key)
     prompt = (
         f"Corrige solamente la gramática y puntuación en el siguiente texto en {language}. "
         "NO añadas texto propio. NO resumas. NO cambies palabras. NO agregues comentarios. "
         "SOLO corrige errores gramaticales, puntuación y capitalización:\n\n"
         + text
     )
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "llama3.1",
-            "prompt": prompt,
-            "stream": False
-        }
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Eres un corrector ortográfico profesional."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=2048,
+        temperature=0.0,
     )
-    if response.status_code != 200:
-        print("Llama3 API error:", response.text)
-        return text  # Return original if error
-    result = response.json()
-    response_text = result.get("response", "").strip()
-    return response_text if response_text else text  # Fallback to original if empty
+    return response.choices[0].message.content.strip()
+
+def section_and_title_with_gpt35(text, language="es"):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY not set in environment variables")
+    client = OpenAI(api_key=api_key)
+    prompt = (
+        f"Divide el siguiente texto en secciones lógicas. "
+        "Para cada sección, genera un título breve y descriptivo (máximo 8 palabras), y coloca el texto de esa sección debajo del título. "
+        "Devuelve el resultado en el siguiente formato:\n\n"
+        "[TÍTULO DE LA SECCIÓN 1]\nTexto de la sección 1...\n\n"
+        "[TÍTULO DE LA SECCIÓN 2]\nTexto de la sección 2...\n\n"
+        "No agregues comentarios ni texto adicional.\n\n"
+        + text
+    )
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Eres un editor profesional de textos."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=2048,
+        temperature=0.3,
+    )
+    return response.choices[0].message.content.strip()
+
+def add_toc(paragraph):
+    fldSimple = OxmlElement('w:fldSimple')
+    fldSimple.set(qn('w:instr'), 'TOC \\o "1-3" \\h \\z \\u')
+    paragraph._p.append(fldSimple)
 
 @router.get("/download/{file_id}")
 async def download_transcription(file_id: str):
@@ -94,7 +128,7 @@ async def export_transcription(
         transcription_text = f.read()
 
     # Clean/humanize the transcription here
-    corrected_text = humanize_with_llama3(transcription_text, language)
+    corrected_text = humanize_with_gpt35(transcription_text, language)
 
     # If empty or too short, use original
     if not corrected_text or len(corrected_text) < len(transcription_text) * 0.8:
@@ -125,9 +159,6 @@ async def export_transcription(
         run = p.add_run()
         run.add_picture('images/cover.png', width=Inches(8.27), height=Inches(10.5))  # Slightly less than full A4
 
-        # Add a section break for main content
-        doc.add_section()
-
         # --- MAIN CONTENT (Section 2, standard margins) ---
         main_section = doc.sections[1]
         main_section.top_margin = Inches(1)
@@ -141,16 +172,37 @@ async def export_transcription(
         header_run = header_paragraph.add_run()
         header_run.add_picture('images/GFT_Logo_RGB.png', width=Inches(1.0))
 
-        # Set font style for main content
-        heading = doc.add_heading('Transcripción de Video', level=1)
-        heading.runs[0].font.name = 'Arial'
-        heading.runs[0].font.size = Pt(18)
+        # Table of Contents
+        doc.add_paragraph('Tabla de Contenidos', style='Heading 1')
+        toc_paragraph = doc.add_paragraph()
+        add_toc(toc_paragraph)
+        doc.add_page_break()
 
-        paragraph = doc.add_paragraph(corrected_text or "Sin texto")
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY  # <-- Justify the paragraph
-        for run in paragraph.runs:
-            run.font.name = 'Noto Sans'
-            run.font.size = Pt(12)
+        # --- Sectioned Content ---
+        sectioned_text = section_and_title_with_gpt35(corrected_text, language)
+
+        # Parse sections: [TITLE]\nText...
+        pattern = re.compile(r"\[(.*?)\]\n(.*?)(?=\n\[|$)", re.DOTALL)
+        matches = pattern.findall(sectioned_text)
+
+        if not matches:
+            # fallback: just add the text as a single section
+            doc.add_heading('Transcripción de Video', level=1)
+            paragraph = doc.add_paragraph(sectioned_text or "Sin texto")
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+            for run in paragraph.runs:
+                run.font.name = 'Noto Sans'
+                run.font.size = Pt(12)
+        else:
+            for title, content in matches:
+                heading = doc.add_heading(title.strip(), level=1)
+                heading.runs[0].font.name = 'Arial'
+                heading.runs[0].font.size = Pt(18)
+                paragraph = doc.add_paragraph(content.strip())
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+                for run in paragraph.runs:
+                    run.font.name = 'Noto Sans'
+                    run.font.size = Pt(12)
 
         file_stream = BytesIO()
         doc.save(file_stream)

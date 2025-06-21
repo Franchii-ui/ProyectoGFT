@@ -27,8 +27,11 @@ async def register_user(
     apellido: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
+    confirmPassword: str = Form(...),  # Add this line
     db: AsyncSession = Depends(get_db)
 ):
+    if password != confirmPassword:
+        raise HTTPException(status_code=400, detail="Las contraseñas no coinciden")
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if user:
