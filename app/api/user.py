@@ -17,23 +17,20 @@ async def login(
     user = result.scalar_one_or_none()
 
     if not user or not bcrypt.verify(password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Credenciales inválidas")
-    
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
     return {"message": "Login exitoso", "id": user.id, "username": user.username, "email": user.email}
 
-@router.post("/registro/")
-async def register_user(
+@router.post("/register/")
+async def register(
     nombre: str = Form(...),
     apellido: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
-    confirmPassword: str = Form(...),  # Add this line
     db: AsyncSession = Depends(get_db)
 ):
-    if password != confirmPassword:
-        raise HTTPException(status_code=400, detail="Las contraseñas no coinciden")
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
+
     if user:
         raise HTTPException(status_code=400, detail="El usuario ya existe")
     username = f"{nombre} {apellido}"
@@ -42,4 +39,4 @@ async def register_user(
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
-    return {"message": "Usuario registrado", "id": new_user.id, "username": new_user.username, "email": new_user.email}
+    return {"message": "Usuario registrado", "id": new_user.id, "username": new_user.username, "email": new_user.email} 

@@ -128,27 +128,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const emailInput = document.getElementById('email') as HTMLInputElement | null;
-    if (!emailInput || !emailInput.value.endsWith('@gft.com')) {
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+    const confirmPasswordInput = document.getElementById('confirmPassword') as HTMLInputElement | null;
+
+    if (!emailInput || !passwordInput || !confirmPasswordInput) {
+      alert('Error: No se encontraron todos los campos del formulario');
+      return;
+    }
+
+    if (!emailInput.value.endsWith('@gft.com')) {
       alert('❌ Por favor, usa tu correo corporativo (@gft.com)');
       return;
     }
-    
+
+    if (passwordInput.value !== confirmPasswordInput.value) {
+      alert('❌ Las contraseñas no coinciden');
+      return;
+    }
+
+    if (passwordInput.value.length < 8) {
+      alert('❌ La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+
     const formData = new FormData(registerForm);
-    
+
     try {
-      const response = await fetch('http://localhost:8000/registro/', {
+      const response = await fetch('http://localhost:8000/register/', {
         method: 'POST',
         body: formData
       });
-      
+
       if (response.ok) {
-        // Guardar datos simplificados en localStorage
         localStorage.setItem('user', emailInput.value);
         localStorage.setItem('isAuthenticated', 'true');
-        
-        // Redirigir directamente a la conversión
         window.location.href = '/convert';
       } else {
         alert('Error al registrar. Por favor, intenta nuevamente.');
