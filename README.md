@@ -177,6 +177,70 @@ postgresql+asyncpg://postgres:12345678@localhost:5432/franchi
 
 ---
 
+### Troubleshooting: Problemas comunes al instalar y ejecutar la app
+
+**Error:** No module named 'fastapi'  
+**Solución:**  
+Asegúrate de haber instalado las dependencias en el entorno virtual correcto:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+---
+
+**Usar python 3.12 en vez de 3.13**  
+**Síntoma:** Errores de compilación al instalar dependencias como `asyncpg` o `pydantic-core`.  
+**Solución:**  
+Verifica la versión de Python:
+```bash
+python --version
+# Debe mostrar Python 3.12.x
+```
+Si no, selecciona la versión correcta (por ejemplo, usando pyenv):
+```bash
+pyenv install 3.12.11
+pyenv local 3.12.11
+```
+Luego, crea y activa el entorno virtual de nuevo.
+
+---
+
+**Error al instalar dependencias con pip**  
+**Síntoma:** Errores como `Failed building wheel for asyncpg` o `pydantic-core`.  
+**Solución:**  
+Asegúrate de usar Python 3.12 y pip actualizado:
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+**El comando uvicorn no se encuentra o usa la versión incorrecta**  
+**Solución:**  
+Asegúrate de activar el entorno virtual antes de ejecutar uvicorn:
+```bash
+source .venv/bin/activate
+uvicorn app.main:app --reload --port 8000
+```
+
+---
+
+**¿Cómo saber si estoy en el entorno virtual correcto?**  
+Cuando actives el entorno virtual, tu terminal debe mostrar el nombre del entorno al inicio de la línea, por ejemplo (esto depende de la ruta donde hayas clonado el repositorio):
+```
+(.venv) user@macbook proyecto %
+```
+
+---
+
+**Consejo:**  
+Siempre activa el entorno virtual antes de instalar dependencias o ejecutar la app.  
+Si tienes problemas con versiones de Python, considera usar `pyenv` para gestionar varias versiones fácilmente.
+
+---
 
 ### Ejecución en desarrollo
 
