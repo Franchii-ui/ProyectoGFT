@@ -117,7 +117,7 @@ Completa el archivo `.env` en la raíz del backend, solo se necesita la API Key 
 
 ```env
 OPENAI_API_KEY=clave_de_la_API (la proporcionaré por correo)
-
+```
 
 ---
 
