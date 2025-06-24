@@ -128,6 +128,10 @@ MAX_VIDEO_SIZE_MB=500
 
 ### Instalación Backend
 
+> **⚠️ Importante:**  
+> Antes de ejecutar estos comandos, asegúrate de estar ubicado en la carpeta correcta (`backend`).  
+> Recuerda la ruta exacta porque la necesitarás más adelante al iniciar el servidor local.
+
 ```bash
 cd backend
 python -m venv venv
@@ -137,6 +141,10 @@ pip install -r requirements.txt
 ```
 
 ### Instalación Frontend
+
+> **⚠️ Importante:**  
+> Antes de ejecutar estos comandos, asegúrate de estar ubicado en la carpeta correcta (`frontend`).  
+> Recuerda la ruta exacta porque la necesitarás más adelante al iniciar el servidor local.
 
 ```bash
 cd frontend
