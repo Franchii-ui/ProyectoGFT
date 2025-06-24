@@ -244,7 +244,7 @@ Si tienes problemas con versiones de Python, considera usar `pyenv` para gestion
 
 ### Ejecución en desarrollo
 
-En dos terminales diferentes:
+En dos terminales diferentes (teniendo siempre en cuenta las rutas de las carpetas para ejecutar los servidores):
 
 ```bash
 # Terminal 1: Backend (FastAPI)
