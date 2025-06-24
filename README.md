@@ -72,6 +72,45 @@ ProyectoGFT/
 - **Backend:** Python 3.9+ y FFmpeg instalado en el sistema  
 - **Frontend:** Node.js 18+ y npm
 
+### Instalación de FFmpeg
+
+#### En **macOS**
+
+Recomendado con [Homebrew](https://brew.sh):
+
+```bash
+brew install ffmpeg
+```
+
+Verifica la instalación:
+
+```bash
+ffmpeg -version
+```
+
+#### En **Windows**
+
+1. Ve a la página oficial: https://ffmpeg.org/download.html  
+   o descarga directamente desde [gyan.dev](https://www.gyan.dev/ffmpeg/builds/).
+
+2. Descarga el archivo ZIP de la última versión "Release build".
+
+3. Extrae el ZIP en una carpeta, por ejemplo: `C:\ffmpeg`
+
+4. Agrega la carpeta `C:\ffmpeg\bin` a la variable de entorno `PATH`:
+   - Busca "Editar las variables de entorno del sistema" en el menú Inicio.
+   - En "Variables del sistema", selecciona `Path` y haz clic en "Editar".
+   - Agrega una nueva entrada: `C:\ffmpeg\bin`
+   - Acepta los cambios y reinicia tu terminal.
+
+5. Verifica la instalación ejecutando en la terminal/cmd:
+
+```cmd
+ffmpeg -version
+```
+
+---
+
 ### Variables de entorno
 
 Completa el archivo `.env` en la raíz del backend (puedes partir de `.env.example`):
@@ -84,6 +123,8 @@ CORS_ORIGINS=http://localhost:4321
 STORAGE_PATH=./uploads
 MAX_VIDEO_SIZE_MB=500
 ```
+
+---
 
 ### Instalación Backend
 
@@ -181,6 +222,6 @@ Status/Health: `/health`
 ## Autor
 
 **Franchii-ui**  
-Última actualización: 2025-06-24 10:45:14 UTC
+Última actualización: 2025-06-24 10:52:26 UTC
 
 ---
