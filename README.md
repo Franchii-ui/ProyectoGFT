@@ -142,6 +142,41 @@ pip install -r requirements.txt
 cd frontend
 npm install
 ```
+### Configuración de la base de datos PostgreSQL
+
+Antes de ejecutar la aplicación, asegúrate de que tienes PostgreSQL instalado y en funcionamiento en tu entorno local.
+
+Para crear la base de datos y configurar el usuario según la conexión utilizada en el proyecto (`db.py`), puedes ejecutar los siguientes comandos en tu terminal o en el cliente psql de PostgreSQL:
+
+```bash
+# 1. Accede al intérprete de comandos de PostgreSQL como superusuario (puede pedir contraseña):
+psql -U postgres
+
+# 2. Crea la base de datos:
+CREATE DATABASE franchi;
+
+# 3. (Opcional, si el usuario no existe) Asegúrate de que el usuario 'postgres' tiene la contraseña adecuada:
+ALTER USER postgres WITH PASSWORD '12345678';
+
+# 4. Da todos los permisos sobre la base de datos al usuario:
+GRANT ALL PRIVILEGES ON DATABASE franchi TO postgres;
+
+# 5. Sal del intérprete de PostgreSQL:
+\q
+```
+
+La cadena de conexión que utiliza la aplicación es:
+
+```
+postgresql+asyncpg://postgres:12345678@localhost:5432/franchi
+```
+
+> **Nota:**  
+> Si ya tienes otro usuario configurado diferente de `postgres`, puedes adaptar estos comandos según tu configuración.  
+> Recuerda que, por seguridad, lo ideal es usar una contraseña más robusta en producción y restringir los permisos del usuario.
+
+---
+
 
 ### Ejecución en desarrollo
 
