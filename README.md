@@ -113,16 +113,11 @@ ffmpeg -version
 
 ### Variables de entorno
 
-Completa el archivo `.env` en la raíz del backend (puedes partir de `.env.example`):
+Completa el archivo `.env` en la raíz del backend, solo se necesita la API Key de OpenAI:
 
 ```env
-SECRET_KEY=pon_un_valor_seguro_aqui
-DATABASE_URL=postgresql://usuario:password@localhost:5432/videotranscriber
-LLM_API_KEY=tu_api_key_de_modelo_llm
-CORS_ORIGINS=http://localhost:4321
-STORAGE_PATH=./uploads
-MAX_VIDEO_SIZE_MB=500
-```
+OPENAI_API_KEY=clave_de_la_API (la proporcionaré por correo)
+
 
 ---
 
