@@ -15,3 +15,4 @@ moviepy==1.0.3
 pydub==0.25.1
 fpdf==1.7.2
 httpx>=0.24.0
+greenlet==3.0.3
