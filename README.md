@@ -244,12 +244,19 @@ Si tienes problemas con versiones de Python, considera usar `pyenv` para gestion
 
 ### Ejecución en desarrollo
 
-En dos terminales diferentes (teniendo siempre en cuenta las rutas de las carpetas para ejecutar los servidores):
+> **⚠️ Importante:**  
+> - Asegúrate de ejecutar los comandos desde las carpetas correctas:  
+>   - `backend` para el servidor FastAPI  
+>   - `frontend` para Astro  
+> - El backend (Uvicorn) **debe ejecutarse en el puerto 8000** para que el frontend pueda comunicarse correctamente con la API.
+> - Si cambias alguna ruta o puerto, actualízalo también en la configuración y en las variables de entorno (`.env`) de ambos proyectos.
+
+En dos terminales diferentes:
 
 ```bash
 # Terminal 1: Backend (FastAPI)
 cd backend
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
 
 # Terminal 2: Frontend (Astro)
 cd frontend
