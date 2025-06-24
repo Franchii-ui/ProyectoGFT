@@ -39,4 +39,4 @@ async def register(
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
-    return {"message": "Usuario registrado", "id": new_user.id, "username": new_user.username, "email": new_user.email}
+    return {"message": "Usuario registrado", "id": new_user.id, "username": new_user.username, "email": new_user.email} 
