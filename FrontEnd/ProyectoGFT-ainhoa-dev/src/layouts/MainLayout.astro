@@ -10,27 +10,50 @@ const { title } = Astro.props;
   <title>GFT Converter</title>
   <style>
     :root {
-      --gft-blue: #213f7f;
-      --gft-blue-light: #3a5a9a;
+      --gft-blue: #213E7F;
+      --gft-blue-light: #0097D9;
+      --gft-pink: #B02A87;
       --transition: all 0.3s ease;
     }
     
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
-      color: #333;
-      background-color: #f8fafc;
       margin: 0;
       padding: 0;
+      background: #000;
+      color: #fff;
+      position: relative;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
-    
-    header {
-      background: white;
-      color: var(--gft-blue);
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/GFT converter.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px) brightness(0.80); 
+      z-index: -1;
+    }
+
+    header::before {
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/GFT converter.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px) brightness(0.90); 
+      z-index: -1;
     }
     
     .header-container {
@@ -49,7 +72,7 @@ const { title } = Astro.props;
     }
     
     .logo img {
-      height: 3rem; /* 32px - ajusta según necesites */
+      height: 2rem;
       width: auto;
       transition: transform 0.3s ease;
     }
@@ -58,43 +81,83 @@ const { title } = Astro.props;
       transform: scale(1.05);
     }
     
-    nav a {
-      color: var(--gft-blue);
-      text-decoration: none;
-      margin-left: 2rem;
-      transition: var(--transition);
-      font-weight: 1000;
+    nav {
+      display: flex;
+      gap: 1.5rem;
     }
     
+    nav a {
+      color: black;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition);
+    }
+    
+    /* Efecto hover con azul claro + subrayado rosa */
     nav a:hover {
-      color: #a3c4ff;
+      color: var(--gft-pink);
+    }
+    
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--gft-pink);
+      animation: underline 0.4s ease-out;
+    }
+    
+    /* Efecto para enlace activo */
+    nav a[aria-current="page"] {
+      color: var(--gft-pink);
+    }
+    
+    nav a[aria-current="page"]::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--gft-pink);
+    }
+    
+    @keyframes underline {
+      from { width: 0; }
+      to { width: 100%; }
     }
     
     footer {
-      background: #112855;
+      background: #111111;
       color: white;
       text-align: center;
-      padding: 2rem;
+      padding: 1rem;
       margin-top: auto;
     }
     
     .footer-logo {
-      height: 2.5rem;
+      height: 2rem;
       margin: 0 auto 1rem;
       opacity: 0.9;
     }
   </style>
 </head>
 <body>
+  <body>
   <header>
     <div class="header-container">
       <div class="logo">
-        <img src="/Logo_GFT.jpg" alt="GFT" class="h-8"> 
+        <img src="/Logo_GFT.png" alt="GFT" class="h-8"> 
       </div>
       <nav>
         <a href="/">Inicio</a>
         <a href="/convert">Convertir</a>
-        <a href="/inicio-sesion">Iniciar Sesión</a>
+        <a href="/registro">Registrarse</a>
+        <a id="authLink" href="/inicio-sesion">Iniciar Sesión</a>
       </nav>
     </div>
   </header>
@@ -104,9 +167,45 @@ const { title } = Astro.props;
   </main>
 
   <footer>
-  <img src="/Logo_GFT.jpg" alt="GFT" class="footer-logo">
+    <img src="/Footer_Logo.png" alt="GFT" class="footer-logo">
     <p>© 2025 GFT Group. Todos los derechos reservados.</p>
     <p class="footer-subtext">Conversión Inteligente de Contenido Audiovisual</p>
   </footer>
+
+  <script>
+    // Verificar autenticación al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      const authLink = document.getElementById('authLink') as HTMLAnchorElement | null;
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
+       const userDataString = localStorage.getItem('user') || '{}';
+      let userData: {email?: string} = {};
+      
+      try {
+        userData = JSON.parse(userDataString) as {email?: string};
+      } catch (error) {
+        console.error('Error al parsear userData:', error);
+      }
+      
+      if (!authLink) {
+        console.error('No se encontró el enlace de autenticación');
+        return;
+      }
+
+      if (isAuthenticated && userData.email) {
+        authLink.textContent = 'Cerrar Sesión';
+        authLink.href = '#';
+        authLink.onclick = () => {
+          localStorage.removeItem('user');
+          localStorage.removeItem('isAuthenticated');
+          window.location.href = '/';
+        };
+      }
+      
+      // Redirigir a login si intentan acceder a /convert sin autenticación
+      if (window.location.pathname === '/convert' && !isAuthenticated) {
+        window.location.href = '/registro';
+      }
+    });
+  </script>
 </body>
 </html>
