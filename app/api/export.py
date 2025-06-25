@@ -153,20 +153,30 @@ async def export_transcription(
         section.left_margin = Inches(0)
         section.right_margin = Inches(0)
 
-        # Add cover image (almost full page, leave a bit of space for section break)
+        # Añade la imagen de portada
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = p.add_run()
-        run.add_picture('images/cover.png', width=Inches(8.27), height=Inches(10.5))  # Slightly less than full A4
+        run.add_picture('images/cover.png', width=Inches(8.27), height=Inches(10.5))
 
-        # --- MAIN CONTENT (Section 2, standard margins) ---
+        # Añade un párrafo vacío después de la imagen (opcional)
+        doc.add_paragraph("")
+
+        # Añade el salto de página SOLO después de tener contenido
+        doc.add_page_break()
+
+        # Añade una nueva sección para el contenido principal
+        from docx.enum.section import WD_SECTION
+        doc.add_section(WD_SECTION.NEW_PAGE)
+
+        # Ahora puedes acceder a la sección 1 (índice 1)
         main_section = doc.sections[1]
         main_section.top_margin = Inches(1)
         main_section.bottom_margin = Inches(1)
         main_section.left_margin = Inches(1)
         main_section.right_margin = Inches(1)
 
-        # Add header logo ONLY to section 2
+        # Añade el logo en el header de la sección principal
         header = main_section.header
         header_paragraph = header.paragraphs[0]
         header_run = header_paragraph.add_run()
